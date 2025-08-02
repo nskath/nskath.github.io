@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Screen Time & Mental Health</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Load D3.js and d3-annotation -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-svg-annotation@2.5.1/d3-annotation.min.js"></script>
+
+  <!-- Load custom script -->
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Screen Time & Mental Health</h1>
+    <p>Exploring the impact of digital habits on anxiety and depression.</p>
+  </header>
+
+  <main>
+    <div id="viz"></div>
+
+    <div id="controls">
+      <button id="nextBtn">Next ▶</button>
+      <label id="metricSelectLabel" style="display:none;">
+        Explore:
+        <select id="metricSelect">
+          <option value="Anxiety">Anxiety</option>
+          <option value="Depression">Depression</option>
+        </select>
+      </label>
+    </div>
+  </main>
+
+  <footer>
+    <p>Created by Navtej Singh Kathuria | Data: Kaggle</p>
+  </footer>
+</body>
+</html>
