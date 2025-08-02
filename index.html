@@ -1,36 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Screen Time & Mental Health</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Mental Health & Tech Usage</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://unpkg.com/d3-svg-annotation@2.5.1/d3-annotation.min.js"></script>
-  <script defer src="script.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+    }
+    #controls {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #viz {
+      display: flex;
+      justify-content: center;
+    }
+    #metricSelectLabel {
+      margin-left: 10px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Screen Time & Mental Health</h1>
-    <p>Exploring how daily screen habits impact mood, stress, and well-being</p>
-  </header>
-
-  <main>
-    <div id="viz"></div>
-
-    <div id="controls">
-      <button id="nextBtn">Next ▶</button>
-      <label id="metricSelectLabel" style="display:none;">
-        Explore:
-        <select id="metricSelect">
-          <option value="mental_health_score">Mental Health Score</option>
-        </select>
-      </label>
-    </div>
-  </main>
-
-  <footer>
-    <p>Created by Navtej Singh Kathuria | Data: Kaggle</p>
-  </footer>
+  <h1>Mental Health and Technology Usage</h1>
+  <div id="controls">
+    <button id="nextBtn">Next Scene</button>
+    <label id="metricSelectLabel" style="display: none;">
+      Choose a metric:
+      <select id="metricSelect">
+        <option value="mentalHealthRating">Mental Health Rating</option>
+        <option value="productivity">Productivity Score</option>
+        <option value="sleepHours">Sleep Hours</option>
+        <option value="stressLevel">Stress Level</option>
+      </select>
+    </label>
+  </div>
+  <div id="viz"></div>
+  <script src="main.js"></script>
 </body>
 </html>

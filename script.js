@@ -1,5 +1,5 @@
 let sceneNumber = 1;
-let selectedMetric = "mental_health_score";
+let selectedMetric = "mentalHealthRating";
 let dataset = [];
 const width = 800, height = 500, margin = { top: 50, right: 40, bottom: 50, left: 60 };
 
@@ -12,53 +12,34 @@ function clearSVG() {
   svg.selectAll("*").remove();
 }
 
-d3.csv("data/digital_diet_mental_health.csv").then(data => {
-  console.log("CSV loaded successfully, rows:", data.length);
+d3.csv("data/mental_health_and_technology_usage_2024.csv").then(data => {
   dataset = data.map(d => ({
-    userId: d.user_id,
+    id: d.id,
     age: +d.age,
     gender: d.gender,
-    screenTime: +d.daily_screen_time_hours,
-    phoneUsage: +d.phone_usage_hours,
-    laptopUsage: +d.laptop_usage_hours,
-    tabletUsage: +d.tablet_usage_hours,
-    tvUsage: +d.tv_usage_hours,
-    socialMedia: +d.social_media_hours,
-    workRelated: +d.work_related_hours,
-    entertainment: +d.entertainment_hours,
-    gaming: +d.gaming_hours,
-    sleepDuration: +d.sleep_duration_hours,
-    sleepQuality: +d.sleep_quality,
-    moodRating: +d.mood_rating,
+    dailyHoursOnTech: +d.daily_hours_on_technology,
+    mentalHealthRating: +d.mental_health_rating,
+    productivity: +d.productivity_score,
+    sleepHours: +d.sleep_hours,
     stressLevel: +d.stress_level,
-    physicalActivity: +d.physical_activity_hours_per_week,
-    locationType: d.location_type,
-    mentalHealth: +d.mental_health_score,
-    usesWellnessApps: d.uses_wellness_apps,
-    eatsHealthy: d.eats_healthy,
-    caffeineIntake: +d.caffeine_intake_mg_per_day,
-    weeklyAnxiety: +d.weekly_anxiety_score,
-    weeklyDepression: +d.weekly_depression_score,
-    mindfulnessMinutes: +d.mindfulness_minutes_per_day
-  })).filter(d => !isNaN(d.screenTime) && !isNaN(d.moodRating) && !isNaN(d.stressLevel) && !isNaN(d.mentalHealth));
+    socialMediaUse: d.social_media_use
+  })).filter(d => !isNaN(d.dailyHoursOnTech));
 
-  console.log("Filtered dataset size:", dataset.length);
-  console.log("Sample data:", dataset[0]);
   updateScene(sceneNumber);
-}).catch(error => {
-  console.error("Error loading CSV:", error);
 });
 
 function updateScene(scene) {
   clearSVG();
-  if (scene === 1) drawScene1();
-  else if (scene === 2) drawScene2();
-  else drawScene3();
-  document.getElementById("metricSelectLabel").style.display = (scene === 3) ? "inline" : "none";
+  if (scene === 1) drawIntro();
+  else if (scene === 2) drawBinnedBar("dailyHoursOnTech", "mentalHealthRating", "Higher Tech Use Correlates With Lower Mental Health", "Avg Mental Health Rating");
+  else if (scene === 3) drawBinnedBar("dailyHoursOnTech", "stressLevel", "Stress Level Increases With Tech Use", "Avg Stress Level");
+  else if (scene === 4) drawBinnedBar("dailyHoursOnTech", "sleepHours", "More Tech Use Means Less Sleep", "Avg Sleep Hours");
+  else drawInteractiveScene();
+  document.getElementById("metricSelectLabel").style.display = (scene === 5) ? "inline" : "none";
 }
 
 document.getElementById("nextBtn").addEventListener("click", () => {
-  sceneNumber = Math.min(sceneNumber + 1, 3);
+  sceneNumber = Math.min(sceneNumber + 1, 5);
   updateScene(sceneNumber);
 });
 
@@ -67,164 +48,93 @@ document.getElementById("metricSelect").addEventListener("change", (e) => {
   updateScene(sceneNumber);
 });
 
-function genderColor(gender) {
-  if (gender.toLowerCase().includes("male")) return "#42a5f5";
-  if (gender.toLowerCase().includes("female")) return "#ec407a";
-  return "#7e57c2";
+function drawIntro() {
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height / 2 - 30)
+    .attr("text-anchor", "middle")
+    .style("font-size", "22px")
+    .style("font-weight", "bold")
+    .text("How Technology Use Impacts Mental Health");
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .text("Explore how screen time relates to stress, sleep, and well-being.");
 }
 
-function drawScene1() {
-  const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
-  const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.moodRating)).nice().range([height - margin.bottom, margin.top]);
+function drawBinnedBar(xKey, yKey, title, yAxisLabel) {
+  const binSize = 1;
+  const bins = d3.bin()
+    .domain([0, d3.max(dataset, d => d[xKey])])
+    .thresholds(d3.range(0, d3.max(dataset, d => d[xKey]) + binSize, binSize))
+    .value(d => d[xKey])(dataset);
 
-  // Add title
+  const binAverages = bins.map(bin => ({
+    bin: bin.x0,
+    avg: d3.mean(bin, d => d[yKey])
+  })).filter(d => !isNaN(d.avg));
+
+  const x = d3.scaleBand()
+    .domain(binAverages.map(d => d.bin))
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(binAverages, d => d.avg)]).nice()
+    .range([height - margin.bottom, margin.top]);
+
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
-    .style("font-size", "16px")
+    .style("font-size", "18px")
     .style("font-weight", "bold")
-    .text("Screen Time vs Mood Rating");
+    .text(title);
 
-  svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
-  svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
-  
-  // Add axis labels
+  svg.append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x).tickFormat(d => `${d}-${+d + binSize}`));
+
+  svg.append("g")
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y));
+
   svg.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
+    .attr("y", 0 - margin.left + 15)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
-    .text("Mood Rating");
-    
+    .text(yAxisLabel);
+
   svg.append("text")
     .attr("transform", `translate(${width / 2}, ${height - 10})`)
     .style("text-anchor", "middle")
-    .text("Daily Screen Time (hours)");
+    .text("Daily Tech Usage (hours)");
 
-  svg.selectAll("circle")
-    .data(dataset)
-    .enter().append("circle")
-    .attr("cx", d => x(d.screenTime))
-    .attr("cy", d => y(d.moodRating))
-    .attr("r", 4)
-    .attr("fill", d => genderColor(d.gender))
-    .append("title")
-    .text(d => `Screen Time: ${d.screenTime}h\nMood: ${d.moodRating}\nGender: ${d.gender}`);
-
-  const annotations = d3.annotation()
-    .annotations([{
-      note: { label: "Mood worsens after 6h", title: "Mood Decline" },
-      x: x(7),
-      y: y(4),
-      dx: 60,
-      dy: -70
-    }]);
-
-  svg.append("g").call(annotations);
+  svg.selectAll("rect")
+    .data(binAverages)
+    .enter().append("rect")
+    .attr("x", d => x(d.bin))
+    .attr("y", d => y(d.avg))
+    .attr("width", x.bandwidth())
+    .attr("height", d => height - margin.bottom - y(d.avg))
+    .attr("fill", "#42a5f5");
 }
 
-function drawScene2() {
-  const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
-  const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.stressLevel)).nice().range([height - margin.bottom, margin.top]);
-
-  // Add title
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2)
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .style("font-weight", "bold")
-    .text("Screen Time vs Stress Level");
-
-  svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
-  svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
-
-  // Add axis labels
-  svg.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
-    .attr("x", 0 - (height / 2))
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .text("Stress Level");
-    
-  svg.append("text")
-    .attr("transform", `translate(${width / 2}, ${height - 10})`)
-    .style("text-anchor", "middle")
-    .text("Daily Screen Time (hours)");
-
-  svg.selectAll("circle")
-    .data(dataset)
-    .enter().append("circle")
-    .attr("cx", d => x(d.screenTime))
-    .attr("cy", d => y(d.stressLevel))
-    .attr("r", 4)
-    .attr("fill", d => genderColor(d.gender))
-    .append("title")
-    .text(d => `Screen Time: ${d.screenTime}h\nStress: ${d.stressLevel}\nGender: ${d.gender}`);
-
-  const annotations = d3.annotation()
-    .annotations([{
-      note: { label: "Stress spikes beyond 6h", title: "Elevated Stress" },
-      x: x(7),
-      y: y(7),
-      dx: 50,
-      dy: -50
-    }]);
-
-  svg.append("g").call(annotations);
+function drawInteractiveScene() {
+  drawBinnedBar("dailyHoursOnTech", selectedMetric, `Tech Use vs ${metricLabel(selectedMetric)}`, metricLabel(selectedMetric));
 }
 
-function drawScene3() {
-  const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
-  const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.mentalHealth)).nice().range([height - margin.bottom, margin.top]);
-
-  // Add title
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2)
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .style("font-weight", "bold")
-    .text("Screen Time vs Mental Health Score");
-
-  svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
-  svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
-
-  // Add axis labels
-  svg.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
-    .attr("x", 0 - (height / 2))
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .text("Mental Health Score");
-    
-  svg.append("text")
-    .attr("transform", `translate(${width / 2}, ${height - 10})`)
-    .style("text-anchor", "middle")
-    .text("Daily Screen Time (hours)");
-
-  svg.selectAll("circle")
-    .data(dataset)
-    .enter().append("circle")
-    .attr("cx", d => x(d.screenTime))
-    .attr("cy", d => y(d.mentalHealth))
-    .attr("r", 4)
-    .attr("fill", d => genderColor(d.gender))
-    .append("title")
-    .text(d => `Screen Time: ${d.screenTime}h\nMental Health Score: ${d.mentalHealth}\nGender: ${d.gender}`);
-
-  const annotations = d3.annotation()
-    .annotations([{
-      note: { label: "Low scores common with higher screen time", title: "Mental Health Decrease" },
-      x: x(8),
-      y: y(3),
-      dx: 50,
-      dy: -40
-    }]);
-
-  svg.append("g").call(annotations);
+function metricLabel(metricKey) {
+  const labels = {
+    mentalHealthRating: "Mental Health Rating",
+    productivity: "Productivity Score",
+    sleepHours: "Sleep Hours",
+    stressLevel: "Stress Level"
+  };
+  return labels[metricKey] || metricKey;
 }
