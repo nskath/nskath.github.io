@@ -1,4 +1,3 @@
-// script.js
 let sceneNumber = 1;
 let selectedMetric = "mental_health_score";
 let dataset = [];
@@ -14,6 +13,7 @@ function clearSVG() {
 }
 
 d3.csv("data/digital_diet_mental_health.csv").then(data => {
+  console.log("CSV loaded successfully, rows:", data.length);
   dataset = data.map(d => ({
     userId: d.user_id,
     age: +d.age,
@@ -42,7 +42,11 @@ d3.csv("data/digital_diet_mental_health.csv").then(data => {
     mindfulnessMinutes: +d.mindfulness_minutes_per_day
   })).filter(d => !isNaN(d.screenTime) && !isNaN(d.moodRating) && !isNaN(d.stressLevel) && !isNaN(d.mentalHealth));
 
+  console.log("Filtered dataset size:", dataset.length);
+  console.log("Sample data:", dataset[0]);
   updateScene(sceneNumber);
+}).catch(error => {
+  console.error("Error loading CSV:", error);
 });
 
 function updateScene(scene) {
@@ -73,8 +77,31 @@ function drawScene1() {
   const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
   const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.moodRating)).nice().range([height - margin.bottom, margin.top]);
 
+  // Add title
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("font-weight", "bold")
+    .text("Screen Time vs Mood Rating");
+
   svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
+  
+  // Add axis labels
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Mood Rating");
+    
+  svg.append("text")
+    .attr("transform", `translate(${width / 2}, ${height - 10})`)
+    .style("text-anchor", "middle")
+    .text("Daily Screen Time (hours)");
 
   svg.selectAll("circle")
     .data(dataset)
@@ -102,8 +129,31 @@ function drawScene2() {
   const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
   const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.stressLevel)).nice().range([height - margin.bottom, margin.top]);
 
+  // Add title
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("font-weight", "bold")
+    .text("Screen Time vs Stress Level");
+
   svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
+
+  // Add axis labels
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Stress Level");
+    
+  svg.append("text")
+    .attr("transform", `translate(${width / 2}, ${height - 10})`)
+    .style("text-anchor", "middle")
+    .text("Daily Screen Time (hours)");
 
   svg.selectAll("circle")
     .data(dataset)
@@ -131,8 +181,31 @@ function drawScene3() {
   const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
   const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.mentalHealth)).nice().range([height - margin.bottom, margin.top]);
 
+  // Add title
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("font-weight", "bold")
+    .text("Screen Time vs Mental Health Score");
+
   svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
+
+  // Add axis labels
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Mental Health Score");
+    
+  svg.append("text")
+    .attr("transform", `translate(${width / 2}, ${height - 10})`)
+    .style("text-anchor", "middle")
+    .text("Daily Screen Time (hours)");
 
   svg.selectAll("circle")
     .data(dataset)
