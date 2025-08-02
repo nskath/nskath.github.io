@@ -16,11 +16,30 @@ function clearSVG() {
 d3.csv("data/digital_diet_mental_health.csv").then(data => {
   dataset = data.map(d => ({
     userId: d.user_id,
+    age: +d.age,
     gender: d.gender,
     screenTime: +d.daily_screen_time_hours,
+    phoneUsage: +d.phone_usage_hours,
+    laptopUsage: +d.laptop_usage_hours,
+    tabletUsage: +d.tablet_usage_hours,
+    tvUsage: +d.tv_usage_hours,
+    socialMedia: +d.social_media_hours,
+    workRelated: +d.work_related_hours,
+    entertainment: +d.entertainment_hours,
+    gaming: +d.gaming_hours,
+    sleepDuration: +d.sleep_duration_hours,
+    sleepQuality: +d.sleep_quality,
     moodRating: +d.mood_rating,
     stressLevel: +d.stress_level,
-    mentalHealth: +d.mental_health_score
+    physicalActivity: +d.physical_activity_hours_per_week,
+    locationType: d.location_type,
+    mentalHealth: +d.mental_health_score,
+    usesWellnessApps: d.uses_wellness_apps,
+    eatsHealthy: d.eats_healthy,
+    caffeineIntake: +d.caffeine_intake_mg_per_day,
+    weeklyAnxiety: +d.weekly_anxiety_score,
+    weeklyDepression: +d.weekly_depression_score,
+    mindfulnessMinutes: +d.mindfulness_minutes_per_day
   })).filter(d => !isNaN(d.screenTime) && !isNaN(d.moodRating) && !isNaN(d.stressLevel) && !isNaN(d.mentalHealth));
 
   updateScene(sceneNumber);
@@ -51,8 +70,8 @@ function genderColor(gender) {
 }
 
 function drawScene1() {
-  const x = d3.scaleLinear().domain([0, 12]).range([margin.left, width - margin.right]);
-  const y = d3.scaleLinear().domain([0, 10]).range([height - margin.bottom, margin.top]);
+  const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
+  const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.moodRating)).nice().range([height - margin.bottom, margin.top]);
 
   svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
@@ -80,8 +99,8 @@ function drawScene1() {
 }
 
 function drawScene2() {
-  const x = d3.scaleLinear().domain([0, 12]).range([margin.left, width - margin.right]);
-  const y = d3.scaleLinear().domain([0, 10]).range([height - margin.bottom, margin.top]);
+  const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
+  const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.stressLevel)).nice().range([height - margin.bottom, margin.top]);
 
   svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
@@ -109,8 +128,8 @@ function drawScene2() {
 }
 
 function drawScene3() {
-  const x = d3.scaleLinear().domain([0, 12]).range([margin.left, width - margin.right]);
-  const y = d3.scaleLinear().domain([0, 10]).range([height - margin.bottom, margin.top]);
+  const x = d3.scaleLinear().domain([0, d3.max(dataset, d => d.screenTime)]).nice().range([margin.left, width - margin.right]);
+  const y = d3.scaleLinear().domain(d3.extent(dataset, d => d.mentalHealth)).nice().range([height - margin.bottom, margin.top]);
 
   svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
