@@ -1,0 +1,38 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fafafa;
+  color: #333;
+  text-align: center;
+}
+
+header {
+  padding: 1em;
+  background-color: #1e88e5;
+  color: white;
+}
+
+#viz {
+  width: 90%;
+  max-width: 900px;
+  height: 500px;
+  margin: 2em auto;
+}
+
+#controls {
+  margin: 1em;
+}
+
+button, select {
+  font-size: 1em;
+  padding: 0.5em 1em;
+  margin-top: 1em;
+  cursor: pointer;
+}
+
+footer {
+  font-size: 0.9em;
+  padding: 1em;
+  color: gray;
+}
