@@ -1,6 +1,6 @@
 // script.js
 let sceneNumber = 1;
-let selectedMetric = "Anxiety";
+let selectedMetric = "mental_health_score";
 let dataset = [];
 const width = 800, height = 500, margin = { top: 50, right: 40, bottom: 50, left: 60 };
 
@@ -9,29 +9,28 @@ const svg = d3.select("#viz")
   .attr("width", width)
   .attr("height", height);
 
-// Scene containers (reused)
 function clearSVG() {
   svg.selectAll("*").remove();
 }
 
-// Load the data (linked to real CSV structure)
 d3.csv("data/digital_diet_mental_health.csv").then(data => {
   dataset = data.map(d => ({
-    screenTime: +d["Daily Screen Time (hours)"],
-    anxiety: +d["Do you often feel anxious or stressed? (0 - No, 1 - Yes)"],
-    depression: +d["Have you ever felt symptoms of depression? (0 - No, 1 - Yes)"],
-  })).filter(d => !isNaN(d.screenTime));
+    userId: d.user_id,
+    gender: d.gender,
+    screenTime: +d.daily_screen_time_hours,
+    moodRating: +d.mood_rating,
+    stressLevel: +d.stress_level,
+    mentalHealth: +d.mental_health_score
+  })).filter(d => !isNaN(d.screenTime) && !isNaN(d.moodRating) && !isNaN(d.stressLevel) && !isNaN(d.mentalHealth));
 
   updateScene(sceneNumber);
 });
 
 function updateScene(scene) {
   clearSVG();
-
   if (scene === 1) drawScene1();
   else if (scene === 2) drawScene2();
   else drawScene3();
-
   document.getElementById("metricSelectLabel").style.display = (scene === 3) ? "inline" : "none";
 }
 
@@ -45,34 +44,35 @@ document.getElementById("metricSelect").addEventListener("change", (e) => {
   updateScene(sceneNumber);
 });
 
+function genderColor(gender) {
+  if (gender.toLowerCase().includes("male")) return "#42a5f5";
+  if (gender.toLowerCase().includes("female")) return "#ec407a";
+  return "#7e57c2";
+}
+
 function drawScene1() {
   const x = d3.scaleLinear().domain([0, 12]).range([margin.left, width - margin.right]);
-  const bins = d3.bin().value(d => d.screenTime).thresholds(x.ticks(12))(dataset);
-  const y = d3.scaleLinear().domain([0, d3.max(bins, d => d.length)]).range([height - margin.bottom, margin.top]);
+  const y = d3.scaleLinear().domain([0, 10]).range([height - margin.bottom, margin.top]);
 
-  svg.append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x));
+  svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
+  svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
 
-  svg.append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y));
-
-  svg.selectAll("rect")
-    .data(bins)
-    .enter().append("rect")
-    .attr("x", d => x(d.x0) + 1)
-    .attr("y", d => y(d.length))
-    .attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 2))
-    .attr("height", d => y(0) - y(d.length))
-    .attr("fill", "#2196f3");
+  svg.selectAll("circle")
+    .data(dataset)
+    .enter().append("circle")
+    .attr("cx", d => x(d.screenTime))
+    .attr("cy", d => y(d.moodRating))
+    .attr("r", 4)
+    .attr("fill", d => genderColor(d.gender))
+    .append("title")
+    .text(d => `Screen Time: ${d.screenTime}h\nMood: ${d.moodRating}\nGender: ${d.gender}`);
 
   const annotations = d3.annotation()
     .annotations([{
-      note: { label: "Majority over 4 hours daily", title: "Heavy Usage" },
-      x: x(5),
-      y: y(d3.max(bins, d => d.length)),
-      dx: 40,
+      note: { label: "Mood worsens after 6h", title: "Mood Decline" },
+      x: x(7),
+      y: y(4),
+      dx: 60,
       dy: -70
     }]);
 
@@ -80,80 +80,59 @@ function drawScene1() {
 }
 
 function drawScene2() {
-  const grouped = d3.rollups(dataset, v => ({
-    anxiety: d3.mean(v, d => d.anxiety),
-    depression: d3.mean(v, d => d.depression)
-  }), d => Math.floor(d.screenTime));
+  const x = d3.scaleLinear().domain([0, 12]).range([margin.left, width - margin.right]);
+  const y = d3.scaleLinear().domain([0, 10]).range([height - margin.bottom, margin.top]);
 
-  const x = d3.scaleBand()
-    .domain(grouped.map(d => d[0]))
-    .range([margin.left, width - margin.right])
-    .padding(0.2);
+  svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
+  svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
 
-  const y = d3.scaleLinear()
-    .domain([0, 1])
-    .range([height - margin.bottom, margin.top]);
-
-  svg.append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).tickFormat(d => d + "h"));
-
-  svg.append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
-
-  svg.selectAll(".bar.anxiety")
-    .data(grouped)
-    .enter().append("rect")
-    .attr("class", "bar anxiety")
-    .attr("x", d => x(d[0]))
-    .attr("y", d => y(d[1].anxiety))
-    .attr("width", x.bandwidth() / 2)
-    .attr("height", d => y(0) - y(d[1].anxiety))
-    .attr("fill", "#f44336");
-
-  svg.selectAll(".bar.depression")
-    .data(grouped)
-    .enter().append("rect")
-    .attr("class", "bar depression")
-    .attr("x", d => x(d[0]) + x.bandwidth() / 2)
-    .attr("y", d => y(d[1].depression))
-    .attr("width", x.bandwidth() / 2)
-    .attr("height", d => y(0) - y(d[1].depression))
-    .attr("fill", "#9c27b0");
+  svg.selectAll("circle")
+    .data(dataset)
+    .enter().append("circle")
+    .attr("cx", d => x(d.screenTime))
+    .attr("cy", d => y(d.stressLevel))
+    .attr("r", 4)
+    .attr("fill", d => genderColor(d.gender))
+    .append("title")
+    .text(d => `Screen Time: ${d.screenTime}h\nStress: ${d.stressLevel}\nGender: ${d.gender}`);
 
   const annotations = d3.annotation()
     .annotations([{
-      note: { label: "Symptoms increase beyond 4h", title: "Risk Threshold" },
-      x: x(5),
-      y: y(0.4),
+      note: { label: "Stress spikes beyond 6h", title: "Elevated Stress" },
+      x: x(7),
+      y: y(7),
       dx: 50,
-      dy: -60
+      dy: -50
     }]);
 
   svg.append("g").call(annotations);
 }
 
 function drawScene3() {
-  const yMetric = selectedMetric.toLowerCase();
   const x = d3.scaleLinear().domain([0, 12]).range([margin.left, width - margin.right]);
-  const y = d3.scaleLinear().domain([0, 1]).range([height - margin.bottom, margin.top]);
+  const y = d3.scaleLinear().domain([0, 10]).range([height - margin.bottom, margin.top]);
 
-  svg.append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x));
-
-  svg.append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y));
+  svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
+  svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
 
   svg.selectAll("circle")
     .data(dataset)
     .enter().append("circle")
     .attr("cx", d => x(d.screenTime))
-    .attr("cy", d => y(d[yMetric]))
+    .attr("cy", d => y(d.mentalHealth))
     .attr("r", 4)
-    .attr("fill", "#4caf50")
+    .attr("fill", d => genderColor(d.gender))
     .append("title")
-    .text(d => `Screen Time: ${d.screenTime}h\n${selectedMetric}: ${d[yMetric]}`);
+    .text(d => `Screen Time: ${d.screenTime}h\nMental Health Score: ${d.mentalHealth}\nGender: ${d.gender}`);
+
+  const annotations = d3.annotation()
+    .annotations([{
+      note: { label: "Low scores common with higher screen time", title: "Mental Health Decrease" },
+      x: x(8),
+      y: y(3),
+      dx: 50,
+      dy: -40
+    }]);
+
+  svg.append("g").call(annotations);
 }
