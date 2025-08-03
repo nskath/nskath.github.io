@@ -1,47 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Mental Health & Tech Usage</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://unpkg.com/d3-svg-annotation@2.5.1/d3-annotation.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 30px;
-      background: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-    }
-    #controls {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    #viz {
-      display: flex;
-      justify-content: center;
-    }
-    #metricSelectLabel {
-      margin-left: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global CO2 Emissions: A Data Story</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 <body>
-  <h1>Mental Health and Technology Usage</h1>
-  <div id="controls">
-    <button id="nextBtn">Next Scene</button>
-    <label id="metricSelectLabel" style="display: none;">
-      Choose a metric:
-      <select id="metricSelect">
-        <option value="mentalHealthRating">Mental Health Rating</option>
-        <option value="productivity">Productivity Score</option>
-        <option value="sleepHours">Sleep Hours</option>
-        <option value="stressLevel">Stress Level</option>
-      </select>
-    </label>
-  </div>
-  <div id="viz"></div>
-  <script src="main.js"></script>
+    <div class="container">
+        <div class="scene active" id="scene1">
+            <div class="title">Global CO2 Emissions</div>
+            <div class="subtitle">Climate Change Visualization through CO2 (1960-2022)</div>
+            <div class="chart-container">
+                <svg id="intro-chart" width="800" height="350"></svg>
+            </div>
+            <div class="scene-text">
+                This  visualization explains the global rise in carbon dioxide emissions since 1960.
+                This explores the different growth trends and other major contributors and allows the user to extrapolate about the future of CO2 emissions. 
+            </div>
+            <div class="navigation">
+                <button class="nav-button" onclick="nextScene()">Begin Story →</button>
+            </div>
+        </div>
+
+        <div class="scene" id="scene2">
+            <div class="scene-title">Overall Global Trend</div>
+            <div class="scene-text">
+                Since 1960, global CO2 emissions have grown rapidly. This chart shows the 
+                total emissions globally, revealing a dangerous trend putting our climate at risk.
+            </div>
+            <div class="chart-container">
+                <svg id="trend-chart" width="800" height="400"></svg>
+            </div>
+            <div class="annotation">
+                <strong>Vizualization Takeaway:</strong> Global CO2 emissions have shown a positive growth rate since 1960, 
+                growing from approximately 9 billion tons to over 36 billion tons in 2022. The key points (highlighted in the chart) 
+                reveal a dramatic acceleration occuring after 1980- often attributed to the industrialization of China and other developing nations.
+            </div>
+            <div class="navigation">
+                <button class="nav-button" onclick="prevScene()">← Back</button>
+                <button class="nav-button" onclick="nextScene()">By Country →</button>
+            </div>
+        </div>
+
+        <div class="scene" id="scene3">
+            <div class="scene-title">The Major Players</div>
+            <div class="scene-text">
+                Large industialized countries contribute more to the global CO2 emissions relative to other nations. This ranking shows the 
+                world's largest CO2 emitters in 2022, revealing who truly needs to own responsibility 
+                for climate change.
+            </div>
+            <div class="chart-container">
+                <svg id="contributors-chart" width="800" height="450"></svg>
+            </div>
+            <div class="annotation">
+                <strong>Power Law Distribution:</strong> Just 5 countries (China, USA, India, Russia, Japan) 
+                account for  ~60% of global CO2 emissions. China, by themselves, produces nearly 31% of the 
+                world's total. 
+            </div>
+            <div class="navigation">
+                <button class="nav-button" onclick="prevScene()">← Back</button>
+                <button class="nav-button" onclick="nextScene()">Explore Data →</button>
+            </div>
+        </div>
+        <div class="scene" id="scene4">
+            <div class="scene-title">Explore!</div>
+            <div class="scene-text">
+                Try the different controls to explore how CO2 emissions have changed over time and between countries.
+                Try to identify trends, anomalies, and patterns in the data that I did not explore in the visualization.
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="country-select">Select Country:</label>
+                    <select id="country-select">
+                        <option value="all">Global Total</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="year-range">Data Through Year:</label>
+                    <input type="range" id="year-range" min="1960" max="2022" value="2022" step="1">
+                    <div><span id="year-display">2022</span></div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <svg id="explore-chart" width="800" height="400"></svg>
+            </div>
+            <div class="annotation">
+                <strong>Examples:</strong> 
+                <ul>
+                    <li>Germany v India CO2 Growth Rate</li>
+                    <li>Randomness with Fiji CO2 Emissions</li>
+                    <li>Kyrgyzstan's Unique Ability to Control CO2 Emissions</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button class="nav-button" onclick="prevScene()">← Back</button>
+                <button class="nav-button" onclick="resetExploration()">Reset View</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+    
+    <div class="data-source">
+        <strong>Data Source:</strong> 
+        <a href="https://github.com/owid/co2-data" target="_blank">
+            Data Linked Here!
+        </a>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

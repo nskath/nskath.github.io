@@ -1,44 +1,249 @@
+/* Global Styles */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f9f9f9;
-  color: #333;
-  text-align: center;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    color: white;
+    line-height: 1.6;
 }
 
-header {
-  background-color: #1e88e5;
-  color: white;
-  padding: 1.5em 0;
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-#viz {
-  width: 90%;
-  max-width: 900px;
-  height: 500px;
-  margin: 2em auto;
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+/* Scene Management */
+.scene {
+    display: none;
+    min-height: 90vh;
+    padding: 20px 0;
 }
 
-#controls {
-  margin: 1em auto;
+.scene.active {
+    display: block;
 }
 
-button, select {
-  font-size: 1em;
-  padding: 0.5em 1em;
-  margin-top: 1em;
-  margin-left: 0.5em;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+/* Typography */
+.title {
+    text-align: center;
+    font-size: 2.8em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #60a5fa;
 }
 
-footer {
-  font-size: 0.85em;
-  padding: 1em;
-  color: #666;
+.subtitle {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #cbd5e1;
+}
+
+.scene-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #3b82f6;
+    font-weight: bold;
+}
+
+.scene-text {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+    text-align: center;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #e2e8f0;
+}
+
+/* Chart Container */
+.chart-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+/* Navigation */
+.navigation {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.nav-button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background 0.3s ease;
+}
+
+.nav-button:hover {
+    background: #2563eb;
+}
+
+.nav-button:disabled {
+    background: #64748b;
+    cursor: not-allowed;
+}
+
+/* Annotations */
+.annotation {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #e2e8f0;
+    padding: 18px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid #3b82f6;
+}
+
+.annotation strong {
+    color: #60a5fa;
+    font-weight: bold;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    pointer-events: none;
+    font-size: 12px;
+    display: none;
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Chart Styling */
+.axis text {
+    fill: #cbd5e1;
+    font-size: 11px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #475569;
+    stroke-width: 1;
+}
+
+.grid line {
+    stroke: rgba(203, 213, 225, 0.1);
+    stroke-dasharray: 2,2;
+}
+
+.grid path {
+    stroke-width: 0;
+}
+
+/* Controls */
+.controls {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-group {
+    display: inline-block;
+    margin: 0 15px;
+    vertical-align: top;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #cbd5e1;
+}
+
+.control-group select {
+    padding: 5px 8px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #1e293b;
+    color: #e2e8f0;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.control-group select option {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 5px;
+}
+
+.control-group input {
+    padding: 5px 8px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+}
+
+.control-group input[type="range"] {
+    width: 150px;
+    padding: 0;
+}
+
+/* Data Source */
+.data-source {
+    text-align: center;
+    margin-top: 40px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-source a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.data-source a:hover {
+    text-decoration: underline;
+}
+
+/* Chart Annotations */
+.chart-annotation {
+    fill: #fbbf24;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.annotation-line {
+    stroke: #fbbf24;
+    stroke-width: 2;
+    stroke-dasharray: 4,4;
+}
+
+.annotation-circle {
+    fill: #fbbf24;
+    stroke: #f59e0b;
+    stroke-width: 2;
+}
+
+/* Loading Message */
+.loading-message {
+    fill: #cbd5e1;
+    font-size: 16px;
+    text-anchor: middle;
 }
