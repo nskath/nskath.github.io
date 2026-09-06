@@ -509,6 +509,9 @@ h3 {
 .sidequest-list small + small { margin-top: 2px; }
 .sidequest-list small a { color: inherit; text-underline-offset: 3px; }
 .sidequest-list .pending-item { color: var(--muted); font-size: .82rem; }
+.project-with-image { display: flex; align-items: flex-start; gap: 16px; }
+.project-with-image > span { flex: 1; }
+.project-image { width: 120px; height: 68px; flex: 0 0 auto; object-fit: cover; }
 .travel-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
 .spotify-connect {
   display: block;
