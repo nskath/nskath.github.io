@@ -51,7 +51,13 @@ for item in recent_items:
         recent_tracks.append(track)
         listening_ms += track.get("duration_ms", 0)
         play_counts[track.get("id")] += 1
-genres = Counter(genre for artist in artists for genre in artist.get("genres", []))
+genre_values = [genre for artist in artists for genre in artist.get("genres", [])]
+if not genre_values:
+    for artist in artists:
+        if artist.get("id"):
+            detail = get_json(token, f"https://api.spotify.com/v1/artists/{artist['id']}")
+            genre_values.extend(detail.get("genres", []))
+genres = Counter(genre_values)
 top_track = max(recent_tracks, key=lambda track: play_counts[track.get("id")], default=None)
 payload = {
     "genres": [{"name": genre, "count": count} for genre, count in genres.most_common(3)],
