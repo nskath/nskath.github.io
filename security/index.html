@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Security engineering, vulnerability research, and publications from Navtej Kathuria.">
+  <title>Security — Navtej Kathuria</title>
+  <link rel="icon" type="image/png" href="/favicon-nk.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><nav class="nav shell" aria-label="Primary navigation">
+    <a class="wordmark" href="/">Navtej Kathuria</a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="nav-links"><span>Menu</span></button>
+    <div class="nav-links" id="nav-links"><a href="/">About</a><a href="/security/" aria-current="page">Security</a><a href="/adjacent/">Adjacent</a><a href="/sidequests/">Sidequests</a></div>
+  </nav></header>
+  <main id="main" class="shell">
+    <header class="page-hero">
+      <h1>Security.</h1>
+    </header>
+
+    <section class="security-section" aria-labelledby="vulnerability-research">
+      <div class="section-heading"><h2 id="vulnerability-research">Vulnerability research</h2></div>
+      <ol class="vulnerability-list">
+        <li><a href="https://github.com/firecrawl/firecrawl/security/advisories/GHSA-7843-ffpq-5f9p" target="_blank" rel="noreferrer"><code>GHSA-7843-ffpq-5f9p</code><span>Remote code execution through Firecrawl git-diff change tracking</span><b>9.3</b></a></li>
+        <li><a href="https://github.com/firecrawl/firecrawl/security/advisories/GHSA-3p54-jg6f-68r8" target="_blank" rel="noreferrer"><code>GHSA-3p54-jg6f-68r8</code><span>Arbitrary file read through unsafe JSON Schema references in Firecrawl</span><b>9.3</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5828" target="_blank" rel="noreferrer"><code>CVE-2026-24213</code><span>Out-of-bounds read in the Triton DALI backend</span><b>8.0</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5828" target="_blank" rel="noreferrer"><code>CVE-2026-24214</code><span>Integer overflow in the Triton DALI backend</span><b>8.0</b></a></li>
+        <li><a href="https://github.com/NVIDIA/product-security/tree/main/2026/5848" target="_blank" rel="noreferrer"><code>CVE-2026-24264</code><span>Highly compressed data denial of service in Triton</span><b>7.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47613</code><span>Local-path disclosure through a Dynamo multimodal request</span><b>7.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47614</code><span>Server-side request forgery in NVIDIA Dynamo</span><b>7.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47615</code><span>Crafted-URL SSRF in a Dynamo multimodal request</span><b>7.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47616</code><span>SSRF in the Dynamo multimodal media fetcher</span><b>7.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47617</code><span>DNS-rebinding SSRF in the Dynamo media fetcher</span><b>7.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47618</code><span>SSRF in the Rust multimodal media fetcher</span><b>7.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5814" target="_blank" rel="noreferrer"><code>CVE-2026-24180</code><span>Heap-based buffer overflow in NVIDIA DALI</span><b>7.3</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5814" target="_blank" rel="noreferrer"><code>CVE-2026-24181</code><span>Improper index validation in NVIDIA DALI</span><b>7.3</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47619</code><span>System failure in Dynamo examples and recipes</span><b>6.6</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47620</code><span>Race condition in LoRA manager initialization</span><b>6.5</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47621</code><span>LoRA manager time-of-check/time-of-use race</span><b>6.5</b></a></li>
+        <li><a href="https://github.com/entireio/cli/security/advisories/GHSA-2h46-9x5w-4wf7" target="_blank" rel="noreferrer"><code>CVE-2026-57208</code><span>Checkpoint metadata path traversal and arbitrary file write in Entire CLI</span><b>6.2</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5828" target="_blank" rel="noreferrer"><code>CVE-2026-24215</code><span>Uncontrolled resource consumption in the Triton DALI backend</span><b>5.7</b></a></li>
+        <li><a href="https://nvidia.custhelp.com/app/answers/detail/a_id/5842" target="_blank" rel="noreferrer"><code>CVE-2026-47622</code><span>Sensitive information exposed in Dynamo error messages</span><b>5.3</b></a></li>
+      </ol>
+    </section>
+
+    <section class="security-section bounty-row" aria-label="Bug bounty rewards">
+      <p class="meta-label">Bug bounty rewards</p>
+      <strong>$XX,000</strong>
+    </section>
+
+    <section class="security-section research-row" aria-labelledby="cscan-title">
+      <p class="meta-label">Open source</p>
+      <a href="https://github.com/nskath/cscan/tree/main" target="_blank" rel="noreferrer"><div><h2 id="cscan-title">cscan</h2><small>A NOOA-based C/C++ security scanner combining 20+ concurrent LLM audit phases with deterministic analysis tools to produce structured vulnerability reports.</small></div><span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="security-section research-row" aria-labelledby="cve-bench-title">
+      <p class="meta-label">Research · ICML 2025 Spotlight</p>
+      <a href="https://arxiv.org/abs/2503.17332" target="_blank" rel="noreferrer"><h2 id="cve-bench-title">CVE-Bench</h2><span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+  <footer class="site-footer shell"><p>Life is about choices</p><p>Last updated on September 5, 2026 at 6:47 PM PDT</p><p>© <span data-year></span> Navtej Kathuria</p></footer>
+  <script src="/script.js"></script>
+</body>
+</html>

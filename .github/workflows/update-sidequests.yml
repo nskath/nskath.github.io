@@ -1,0 +1,45 @@
+name: Update sidequests
+
+on:
+  schedule:
+    - cron: "0 16 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install browser tooling
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Update Club Locker rating
+        run: python scripts/update_clublocker.py
+
+      - name: Update Spotify snapshot
+        if: ${{ env.SPOTIFY_REFRESH_TOKEN != '' }}
+        env:
+          SPOTIFY_CLIENT_ID: 1c1a24cb353840adbd2d55d674b00a81
+        run: python scripts/update_spotify.py
+
+      - name: Commit updated snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "Update sidequest snapshots"
+          git push
