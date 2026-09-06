@@ -60,7 +60,7 @@ if not genre_values:
 genres = Counter(genre_values)
 top_track = max(recent_tracks, key=lambda track: play_counts[track.get("id")], default=None)
 payload = {
-    "genres": [{"name": genre, "count": count} for genre, count in genres.most_common(3)],
+    "artists": [{"name": artist["name"], "url": artist.get("external_urls", {}).get("spotify")} for artist in artists[:3]],
     "listening_minutes": round(listening_ms / 60000),
     "top_track": {
         "name": top_track["name"],
