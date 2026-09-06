@@ -1,5 +1,12 @@
 {
-  "artists": [],
   "genres": [],
-  "updated_at": null
+  "listening_minutes": 140,
+  "top_track": {
+    "name": "Gal Sun - UPLIFT (feat. Rackstar)",
+    "artist": "Sabaat Batin, Rackstar",
+    "album": "Gal Sun - UPLIFT (feat. Rackstar)",
+    "album_art": "https://i.scdn.co/image/ab67616d0000b27339349fff727a0353d3c9db51",
+    "url": "https://open.spotify.com/track/3OiiqNHZsAHjHavEg5yXAC"
+  },
+  "updated_at": "2026-09-06T02:18:16.655858+00:00"
 }
